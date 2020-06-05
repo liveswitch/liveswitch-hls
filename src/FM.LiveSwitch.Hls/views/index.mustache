@@ -1,0 +1,31 @@
+<html>
+    <head>
+        <title>Live Recordings</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    </head>
+    <body style="margin: 1em">
+        <h3>Live Recordings</h3>
+        {{#channels}}
+        <h4>{{id}}</h4>
+        <div style="padding-left: 1em">
+            {{#connections}}
+            <div style="padding-left: 1em">
+            <video id="{{id}}" controls></video>
+            </div>
+            {{/connections}}
+        </li>
+        </div>
+        {{/channels}}
+        <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <script src="script/play.js"></script>
+        <script>
+        {{#channels}}
+        {{#connections}}
+        play(document.getElementById('{{id}}'), '{{{path}}}')
+        {{/connections}}
+        {{/channels}}
+        </script>
+    </body>
+</html>
