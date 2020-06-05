@@ -8,9 +8,10 @@ The LiveSwitch HLS Demo was built using Node.js and TypeScript. It is provided a
 
 ## Requirements
 
-1. `ffmpeg`
-1. `node`
-1. `ngrok` (optional)
+1. [lsconnect](https://github.com/liveswitch/liveswitch-connect)
+1. [ffmpeg](https://ffmpeg.org/)
+1. [Node.js](https://nodejs.org/)
+1. [ngrok](https://ngrok.com/) (optional)
 
 ## Getting Started
 
