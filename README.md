@@ -1,6 +1,6 @@
 # LiveSwitch HLS Demo
 
-![license](https://img.shields.io/badge/License-MIT-yellow.svg)
+![license](https://img.shields.io/badge/License-MIT-yellow.svg) ![code quality](https://app.codacy.com/project/badge/Grade/9937a1d117224989a0cd846a43d8f957)
 
 The LiveSwitch HLS Demo listens for new connections using LiveSwitch Cloud webhooks and converts them into a near-real-time HLS stream using `lsconnect` and `ffmpeg`.
 
