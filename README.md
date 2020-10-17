@@ -8,10 +8,10 @@ The LiveSwitch HLS Demo was built using Node.js and TypeScript. It is provided a
 
 ## Requirements
 
-1. [lsconnect](https://github.com/liveswitch/liveswitch-connect)
-1. [ffmpeg](https://ffmpeg.org/)
-1. [Node.js](https://nodejs.org/)
-1. [ngrok](https://ngrok.com/) (optional)
+1.  [lsconnect](https://github.com/liveswitch/liveswitch-connect)
+2.  [ffmpeg](https://ffmpeg.org/)
+3.  [Node.js](https://nodejs.org/)
+4.  [ngrok](https://ngrok.com/) (optional)
 
 ## Getting Started
 
@@ -23,7 +23,7 @@ Update `applicationId` and `sharedSecret` in `app.ts` to your LiveSwitch applica
 
 In a terminal, browse to `src/FM.LiveSwitch.Hls` and type:
 
-```
+```shell
 node app.js
 ```
 
@@ -31,7 +31,7 @@ The web server is now listening for inbound webhooks.
 
 Use [ngrok](https://ngrok.com/) in a separate terminal to create a secure tunnel to port 3000:
 
-```
+```shell
 ngrok http 3000
 ```
 
@@ -43,7 +43,7 @@ Finally, add a channel-level webhook for the `Connection Connected` event to you
 
 In your `node` terminal window, you should see a URL with your application ID and shared secret:
 
-```
+```shell
 Browse to: https://demo.liveswitch.io/#application=...&sharedsecret=...&mode=1
 ```
 
@@ -51,9 +51,9 @@ Browse to: https://demo.liveswitch.io/#application=...&sharedsecret=...&mode=1
 
 Open a web browser and navigate to the URL. You should see the standard LiveSwitch demo app. Join any channel, and you should see a few things happen:
 
-1. The `ngrok` terminal should show that an inbound POST request has been forwarded to port 3000.
-1. The `node` terminal should show logs indicating that a webhook event has been received and is being processed by `lsconnect` and `ffmpeg`.
-1. The file system should show HLS output under `src/FM.LiveSwitch.Hls/static/hls`.
+1.  The `ngrok` terminal should show that an inbound POST request has been forwarded to port 3000.
+2.  The `node` terminal should show logs indicating that a webhook event has been received and is being processed by `lsconnect` and `ffmpeg`.
+3.  The file system should show HLS output under `src/FM.LiveSwitch.Hls/static/hls`.
 
 Open a new browser tab and navigate to [http://localhost:3000](http://localhost:3000). You should see a list of live recordings, including the one that is currently active!
 
@@ -61,7 +61,7 @@ Open a new browser tab and navigate to [http://localhost:3000](http://localhost:
 
 If you are using macOS or Linux, you may need to set the executable bit on `lsconnect`:
 
-```
+```shell
 chmod +x lsconnect
 chmod +x lsconnect-macos
 ```
