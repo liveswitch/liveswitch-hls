@@ -1,5 +1,6 @@
 {
     "rules": {
-        "no-console": "off"
+        "no-console": "off",
+        "detect-non-literal-fs-filename": "off"
     }
 }

@@ -57,12 +57,12 @@ app.post("/", function (req, res) {
         res.status(400);
         return;
     }
-    if (event.type != "connection.connected") {
+    if (event.type !== "connection.connected") {
         console.log("Unexpected event type.", event);
         res.status(400);
         return;
     }
-    if (event.origin != "mediaserver") {
+    if (event.origin !== "mediaserver") {
         res.status(200);
         return;
     }
@@ -81,7 +81,7 @@ app.post("/", function (req, res) {
         }
     }
     let command = "lsconnect";
-    if (process.platform == "darwin") {
+    if (process.platform === "darwin") {
         command = "lsconnect-macos";
     }
     let args = [
@@ -107,6 +107,6 @@ app.post("/", function (req, res) {
     res.status(200);
 });
 console.log(`Browse to: https://demo.liveswitch.io/#application=${applicationId}&sharedsecret=${sharedSecret}&mode=1`);
-app.use(`/`, express_1.default.static(staticRoot));
+app.use("/", express_1.default.static(staticRoot));
 app.listen(3000);
 //# sourceMappingURL=app.js.map
