@@ -24,6 +24,7 @@ Update `applicationId` and `sharedSecret` in `app.ts` to your LiveSwitch applica
 In a terminal, browse to `src/FM.LiveSwitch.Hls` and type:
 
 ```shell
+npm install
 node app.js
 ```
 
