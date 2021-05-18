@@ -7,9 +7,10 @@ const express_1 = __importDefault(require("express"));
 const mustache_express_1 = __importDefault(require("mustache-express"));
 const child_process_1 = __importDefault(require("child_process"));
 const fs_1 = __importDefault(require("fs"));
+const delim = "/";
 const gatewayUrl = "https://cloud.liveswitch.io";
-const applicationId = "<YOUR_APPLICATION_ID_GOES_HERE>";
-const sharedSecret = "<YOUR_SHARED_SECRET_GOES_HERE>";
+const applicationId = "24db8476-f35b-4bd1-95a6-f7ed77a8d966";
+const sharedSecret = "4a839c7276f549ee8d834cdfe4565743fa3a8f601c5a49dab0b479e1f67cb286";
 const staticRoot = "static";
 const recordingRoot = "hls";
 const recordingName = "hls.m3u8";
@@ -20,16 +21,17 @@ app.set("view engine", "mustache");
 app.set("views", __dirname + "/views");
 app.use(express_1.default.json());
 app.get("/", function (req, res) {
+    console.log("GET request");
     mst.cache.reset();
     let index = {
         channels: []
     };
-    for (let channelId of fs_1.default.readdirSync(`${staticRoot}\\${recordingRoot}`)) {
+    for (let channelId of fs_1.default.readdirSync(`${staticRoot}${delim}${recordingRoot}`)) {
         let channel = {
             id: channelId,
             connections: []
         };
-        for (let connectionId of fs_1.default.readdirSync(`${staticRoot}\\${recordingRoot}\\${channelId}`)) {
+        for (let connectionId of fs_1.default.readdirSync(`${staticRoot}${delim}${recordingRoot}${delim}${channelId}`)) {
             let connection = {
                 id: connectionId,
                 path: `${recordingRoot}/${channelId}/${connectionId}/${recordingName}`
@@ -46,6 +48,7 @@ app.get("/", function (req, res) {
     res.render("index", index);
 });
 app.post("/", function (req, res) {
+    console.log('POST request');
     let event = req.body;
     if (!event) {
         console.log("Unexpected request.", req);
@@ -72,10 +75,11 @@ app.post("/", function (req, res) {
         res.status(400);
         return;
     }
-    let outputPath = `${staticRoot}\\${recordingRoot}\\${connection.channelId}\\${connection.id}`;
+    console.log("All clear...", event);
+    let outputPath = `${staticRoot}${delim}${recordingRoot}${delim}${connection.channelId}${delim}${connection.id}`;
     let directory = "";
-    for (let segment of outputPath.split("\\")) {
-        directory += `${segment}\\`;
+    for (let segment of outputPath.split(delim)) {
+        directory += `${segment}${delim}`;
         if (!fs_1.default.existsSync(directory)) {
             fs_1.default.mkdirSync(directory);
         }
@@ -91,22 +95,32 @@ app.post("/", function (req, res) {
         "--shared-secret", sharedSecret,
         "--channel-id", connection.channelId,
         "--connection-id", connection.externalId,
-        `--output-args=-flags +cgop -g 30 -hls_time 1 ${outputPath}\\${recordingName}`
+        `--output-args=-flags +cgop -g 30 -hls_time 1 ${outputPath}/${recordingName}`
     ];
+    console.log(`Executing. Current directory: ${process.cwd()}`);
     console.log(command, args);
-    let p = child_process_1.default.spawn(command, args);
-    p.stdout.on("data", (data) => {
-        process.stdout.write(data);
-    });
-    p.stderr.on("data", (data) => {
-        process.stderr.write(data);
-    });
-    p.on("close", (code) => {
-        console.log(`lsconnect exited with code ${code}.`);
-    });
-    res.status(200);
+    try {
+        let p = child_process_1.default.spawn(command, args);
+        p.stdout.on("data", (data) => {
+            process.stdout.write(data);
+        });
+        p.stderr.on("data", (data) => {
+            process.stderr.write(data);
+        });
+        p.on("close", (code) => {
+            console.log(`lsconnect exited with code ${code}.`);
+        });
+        p.on("error", (code) => {
+            console.log(`lsconnect errored with code ${code}.`);
+        });
+        res.status(200);
+    }
+    catch (e) {
+        console.error(e);
+        res.status(500);
+    }
 });
 console.log(`Browse to: https://demo.liveswitch.io/#application=${applicationId}&sharedsecret=${sharedSecret}&mode=1`);
 app.use("/", express_1.default.static(staticRoot));
-app.listen(3000);
+app.listen(3001);
 //# sourceMappingURL=app.js.map

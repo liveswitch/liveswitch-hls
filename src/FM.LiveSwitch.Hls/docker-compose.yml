@@ -1,0 +1,11 @@
+# https://github.com/nodejs/docker-node/tree/8b68fca7a5089bd8795ae85b55617314e966487b
+version: "2"
+services:
+  node:
+    build: .
+    working_dir: /code
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "3001:3001"
+    command: "npm start"
