@@ -1,6 +1,11 @@
-# LiveSwitch HLS Demo
+# DEPRECATED - LiveSwitch HLS Demo
 
 ![code quality](https://app.codacy.com/project/badge/Grade/9937a1d117224989a0cd846a43d8f957) ![license](https://img.shields.io/badge/License-MIT-yellow.svg)
+
+This project has been deprecated and will no longer be supported. RTMP has been made available for LiveSwitch customers, if you still require HLS streaming you can port the RTMP stream out into your CDN provider of choice or nginx. Below are some helpful documents covering RTMP.
+
+- [Broadcast Using RTMP](https://developer.liveswitch.io/liveswitch-server/guides/broadcast-rtmp.html)
+- [RTMP Stream Layout](https://developer.liveswitch.io/liveswitch-server/guides/rtmp-stream-layout.html)
 
 The LiveSwitch HLS Demo listens for new connections using LiveSwitch Cloud webhooks and converts them into a near-real-time HLS stream using `lsconnect` and `ffmpeg`.
 
