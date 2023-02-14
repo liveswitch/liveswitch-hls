@@ -3,10 +3,12 @@ import mustache from "mustache-express";
 import exec from "child_process";
 import fs from "fs";
 
+const delim = "/"
+
 const gatewayUrl = "https://cloud.liveswitch.io";
 
-const applicationId = "<YOUR_APPLICATION_ID_GOES_HERE>";
-const sharedSecret = "<YOUR_SHARED_SECRET_GOES_HERE>";
+const applicationId = "24db8476-f35b-4bd1-95a6-f7ed77a8d966";
+const sharedSecret = "";
 
 const staticRoot = "static";
 const recordingRoot = "hls";
@@ -22,16 +24,17 @@ app.set("views", __dirname + "/views");
 app.use(express.json());
 
 app.get("/", function (req, res) {
+    console.log("GET request");
     mst.cache.reset();
     let index = {
         channels: []
     };
-    for (let channelId of fs.readdirSync(`${staticRoot}\\${recordingRoot}`)) {
+    for (let channelId of fs.readdirSync(`${staticRoot}${delim}${recordingRoot}`)) {
         let channel = {
             id: channelId,
             connections: []
         };
-        for (let connectionId of fs.readdirSync(`${staticRoot}\\${recordingRoot}\\${channelId}`)) {
+        for (let connectionId of fs.readdirSync(`${staticRoot}${delim}${recordingRoot}${delim}${channelId}`)) {
             let connection = {
                 id: connectionId,
                 path: `${recordingRoot}/${channelId}/${connectionId}/${recordingName}`
@@ -49,6 +52,7 @@ app.get("/", function (req, res) {
 })
 
 app.post("/", function (req, res) {
+    console.log('POST request')
     let event = req.body;
     if (!event) {
         console.log("Unexpected request.", req);
@@ -80,11 +84,11 @@ app.post("/", function (req, res) {
         return;
     }
 
-    let outputPath = `${staticRoot}\\${recordingRoot}\\${connection.channelId}\\${connection.id}`;
+    let outputPath = `${staticRoot}${delim}${recordingRoot}${delim}${connection.channelId}${delim}${connection.id}`;
 
     let directory = "";
-    for (let segment of outputPath.split("\\")) {
-        directory += `${segment}\\`;
+    for (let segment of outputPath.split(delim)) {
+        directory += `${segment}${delim}`;
         if (!fs.existsSync(directory)) {
             fs.mkdirSync(directory);
         }
@@ -102,27 +106,37 @@ app.post("/", function (req, res) {
         "--shared-secret", sharedSecret,
         "--channel-id", connection.channelId,
         "--connection-id", connection.externalId,
-        `--output-args=-flags +cgop -g 30 -hls_time 1 ${outputPath}\\${recordingName}`
+        `--output-args=-flags +cgop -g 30 -hls_time 1 ${outputPath}${delim}${recordingName}`
     ];
+    console.log(`Executing. Current directory: ${process.cwd()}`);
 
     console.log(command, args);
-    let p = exec.spawn(command, args);
-    p.stdout.on("data", (data) => {
-        process.stdout.write(data);
-    });
-
-    p.stderr.on("data", (data) => {
-        process.stderr.write(data);
-    });
-
-    p.on("close", (code) => {
-        console.log(`lsconnect exited with code ${code}.`);
-    });
-    res.status(200);
+    try{
+        let p = exec.spawn(command, args);
+        p.stdout.on("data", (data) => {
+            process.stdout.write(data);
+        });
+    
+        p.stderr.on("data", (data) => {
+            process.stderr.write(data);
+        });
+    
+        p.on("close", (code) => {
+            console.log(`lsconnect exited with code ${code}.`);
+        });
+        p.on("error", (err) => {
+            console.log(`lsconnect failed with error ${err}.`);
+        });
+        res.status(200);
+    }catch(e){
+        console.error(e);
+        res.status(500);
+    }
+    
 })
 
 console.log(`Browse to: https://demo.liveswitch.io/#application=${applicationId}&sharedsecret=${sharedSecret}&mode=1`);
 
 app.use("/", express.static(staticRoot));
 
-app.listen(3000);
+app.listen(3001);
